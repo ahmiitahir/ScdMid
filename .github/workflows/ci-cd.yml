@@ -1,0 +1,80 @@
+name: CI/CD Pipeline 
+
+
+on: 
+  push: 
+    branches: 
+      - main  # Trigger the pipeline when pushing to the 'main' branch 
+ 
+jobs: 
+  build: 
+    runs-on: ubuntu-latest 
+ 
+    steps: 
+      - name: Checkout Repository 
+        uses: actions/checkout@v2 
+ 
+      - name: Set up Node.js 
+        uses: actions/setup-node@v2 
+        with: 
+          node-version: '18' 
+ 
+      - name: Install Dependencies 
+        run: | 
+          cd api-gateway 
+          npm install 
+          cd ../customer-services 
+          npm install 
+          
+      - name: Install Dependencies    
+        run: | 
+          cd api-gateway 
+          npm install 
+          cd ../menu-services 
+          npm install 
+        
+ 
+      - name: Install Dependencies    
+        run: | 
+          cd api-gateway 
+          npm install 
+          cd ../order-services 
+          npm install
+
+      - name: Install Dependencies    
+        run: | 
+            cd api-gateway 
+            npm install 
+            cd ../inventory-services 
+            npm install
+
+      - name: Install Dependencies    
+        run: | 
+              cd api-gateway 
+              npm install 
+              cd ../payment-services 
+              npm install
+
+      - name: Build Docker Images 
+        run: | 
+          docker build -t api-gateway:latest ./api-gateway 
+          docker build -t customer-services:latest ./customer-services 
+          docker build -t menu-services:latest ./menu-services
+          docker build -t order-services:latest ./order-services
+          docker build -t inventory-services:latest ./inventory-services
+          docker build -t payment-services:latest ./payment-services
+ 
+      - name: Push Docker Images to Docker Hub (optional) 
+        run: | 
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+          docker push api-gateway:latest 
+          docker push customer-services:latest 
+          docker push menu-services:latest 
+          docker push order-services:latest 
+          docker push inventory-services:latest 
+          docker push payment-services:latest
+ 
+      - name: Deploy to Server (optional) 
+        run: | 
+          # Deploy the docker containers to your server or cloud service 
+          # Example: SSH into the server and run docker commands
